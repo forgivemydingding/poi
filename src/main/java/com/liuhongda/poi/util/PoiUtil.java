@@ -7,7 +7,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -32,6 +34,147 @@ public class PoiUtil {
         int day = a.get(Calendar.DATE);
         String date = year + "年" + month + "月" + day + "日";
         System.out.println(date);
+
+    }
+
+//    public void exportWord(List<Presentation> presentations, LocalDateTime time, String path) throws Exception {
+//
+//        //创建一个文档实例
+//        XWPFDocument xwpfDocument = new XWPFDocument();
+//
+//        //添加标题
+//        XWPFParagraph title = xwpfDocument.createParagraph();
+//
+//        //段落居中
+//        title.setAlignment(ParagraphAlignment.CENTER);
+//
+//        XWPFRun run = title.createRun();
+//        run.setText("各设区市" + time.getMonthValue() + "月份新闻发布会统计表");
+//        run.setColor("000000");
+//        run.setFontSize(20);
+//
+//        //换行
+//        XWPFParagraph brParagraph = xwpfDocument.createParagraph();
+//        XWPFRun brRun = brParagraph.createRun();
+//        brRun.setText("\n");
+//
+//        for (AreaEnum areaEnum : AreaEnum.values()) {
+//            LinkedList<Presentation> oneArea = new LinkedList<>();
+//            String name = areaEnum.getName();
+//            presentations.stream().forEach(p -> {
+//                if (p.getTerritory().equals(name)) {
+//                    oneArea.add(p);
+//                }
+//            });
+//            if (!oneArea.isEmpty()) {
+//                exportTable(oneArea, xwpfDocument, time);
+//            }
+//        }
+//
+//        File file = new File(path);
+//        if (file.exists()) {
+//            file.delete();
+//        }
+//        //文件不存在时会自动创建
+//        OutputStream os = new FileOutputStream(file);
+//        //写入文件
+//        xwpfDocument.write(os);
+//        os.close();
+//
+//    }
+//
+//    /**
+//     * 输出table
+//     *
+//     * @param tableList
+//     * @param xwpfDocument
+//     * @param time
+//     */
+//    private void exportTable(List<Presentation> tableList, XWPFDocument xwpfDocument, LocalDateTime time) {
+//
+//        //获取字段数量
+//        int mapSize = 6;
+//        //创建表
+//        XWPFTable table = xwpfDocument.createTable(tableList.size() + 2, mapSize);
+//
+//        //表格属性
+//        CTTblPr tablePr = table.getCTTbl().addNewTblPr();
+//        CTTblWidth ctTblWidth = tablePr.addNewTblW();
+//        ctTblWidth.setW(BigInteger.valueOf(8000));
+//        tablePr.addNewJc().setVal(STJc.CENTER);
+//
+//        //获取所有行元素
+//        List<XWPFTableRow> rows = table.getRows();
+//        //首行合并为一格
+//        mergeCellsHorizontal(table, 0, 0, mapSize - 1);
+//
+//        //给标题行赋值
+//        XWPFTableRow xwpfTableRowTitle = rows.get(0);
+//        xwpfTableRowTitle.setHeight(500);
+//        List<XWPFTableCell> tableCells = xwpfTableRowTitle.getTableCells();
+//        XWPFTableCell xwpfTableCellTitle = tableCells.get(0);
+//        String territory = tableList.get(0).getTerritory();
+//        centerCell(xwpfTableCellTitle, "截至" + DateTimeUtil.chineseDate(time) + "，" + territory + "市共举办新闻发布会" + tableList.size() + "场。", true);
+//
+//        //给字段赋值
+//        XWPFTableRow xwpfTableRowCol = rows.get(1);
+//        xwpfTableRowCol.setHeight(500);
+//        List<XWPFTableCell> tableCellsCol = xwpfTableRowCol.getTableCells();
+//        centerCell(tableCellsCol.get(0), "序号", true);
+//        tableCellsCol.get(0).getCTTc().addNewTcPr().addNewTcW().setW(BigInteger.valueOf(600));
+//        centerCell(tableCellsCol.get(1), "发布时间", true);
+//        tableCellsCol.get(1).getCTTc().addNewTcPr().addNewTcW().setW(BigInteger.valueOf(2000));
+//        centerCell(tableCellsCol.get(2), "主发布人", true);
+//        tableCellsCol.get(2).getCTTc().addNewTcPr().addNewTcW().setW(BigInteger.valueOf(1000));
+//        centerCell(tableCellsCol.get(3), "主持人", true);
+//        tableCellsCol.get(3).getCTTc().addNewTcPr().addNewTcW().setW(BigInteger.valueOf(1000));
+//        centerCell(tableCellsCol.get(4), "发布主题", true);
+//        tableCellsCol.get(4).getCTTc().addNewTcPr().addNewTcW().setW(BigInteger.valueOf(1800));
+//        centerCell(tableCellsCol.get(5), "图文实录链接", true);
+//
+//        //当前行元素所有格子
+//        List<XWPFTableCell> cells;
+//        int k = 1;
+//        int rowSize = rows.size();
+//        //数据填入表格
+//        for (int i = 2; i < rowSize; i++) {
+//            Presentation presentation = tableList.get(i - 2);
+//            rows.get(i).setHeight(500);
+//            cells = rows.get(i).getTableCells();
+//            centerCell(cells.get(0), String.valueOf(k++), false);
+//            centerCell(cells.get(1), DateTimeUtil.chineseDate(presentation.getPublishTime().toLocalDateTime()), false);
+//            centerCell(cells.get(2), presentation.getMainPublisher(), false);
+//            centerCell(cells.get(3), presentation.getCompere(), false);
+//            centerCell(cells.get(4), presentation.getTheme(), false);
+//            centerCell(cells.get(5), presentation.getImgAddress(), false);
+//        }
+//
+//        //换行
+//        XWPFParagraph brParagraph = xwpfDocument.createParagraph();
+//        XWPFRun brRun = brParagraph.createRun();
+//        brRun.setText("\n");
+//
+//    }
+
+    /**
+     * 居中
+     *
+     * @param xwpfTableCell
+     * @param param
+     * @param setBold
+     */
+    private void centerCell(XWPFTableCell xwpfTableCell, String param, Boolean setBold) {
+        XWPFParagraph xwpfParagraph = xwpfTableCell.addParagraph();
+        XWPFRun pRun0 = xwpfParagraph.createRun();
+        pRun0.setText(param);
+        if (setBold == true) {
+            pRun0.setBold(true);
+        }
+        //垂直居中
+        xwpfTableCell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
+        //水平居中
+        xwpfParagraph.setAlignment(ParagraphAlignment.CENTER);
+        xwpfTableCell.removeParagraph(0);
 
     }
 
